@@ -7,8 +7,8 @@
 
 
 void SystemClock_Config(void);
-volatile short encA;
-volatile int16_t encB;
+volatile int32_t encA;
+volatile int32_t encB;
 uint16_t speed=0;
 int main(void)
 {
@@ -31,14 +31,31 @@ int main(void)
 	HAL_TIM_PWM_Start(&htim9, TIM_CHANNEL_2);
   while (1)
   {
-		speed_run(speed,speed);
+		while(encB < 50000){
+			speed_run(0,40000);
+		}
+		speed_run(0,0);
+//		while(1){
+//			if(HAL_GPIO_ReadPin(U_BTN_GPIO_Port,U_BTN_Pin)==GPIO_PIN_RESET){
+//				HAL_Delay(500);
+//				break;
+//			}
+//		}
+//		speed_run(40000,speed);
+//		while(1){
+//			if(HAL_GPIO_ReadPin(U_BTN_GPIO_Port,U_BTN_Pin)==GPIO_PIN_RESET){
+//				HAL_Delay(500);
+//				break;
+//			}
+//		}
+		//count();
 		if(HAL_GPIO_ReadPin(U_BTN_GPIO_Port,U_BTN_Pin)==GPIO_PIN_RESET){
 			speed+=5000;
-			if(speed>40000) speed=0;
+			if(speed>40000) speed = 0;
 			HAL_GPIO_WritePin(BZ_GPIO_Port,BZ_Pin,GPIO_PIN_RESET);
-			HAL_Delay(200);
+			HAL_Delay(100);
 			HAL_GPIO_WritePin(BZ_GPIO_Port,BZ_Pin,GPIO_PIN_SET);
-			HAL_Delay(800);
+			HAL_Delay(100);
 		}
   }
 }

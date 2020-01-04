@@ -22,12 +22,16 @@
 
 /* USER CODE BEGIN 0 */
 
-extern volatile short encA;
-extern volatile short encB;
+extern volatile int32_t encA;
+extern volatile int32_t encB;
 
-volatile short l_encA;			/* encoder curent value */
+volatile short l_encA;				/* encoder value at now */
+volatile short l_pre_encA;		/* encoder value at 1s ago */
+volatile int16_t l_cntA = 0;	/* revs of the value range */
 
-volatile short l_encB;
+volatile short l_encB;				/* encoder value at now */
+volatile short l_pre_encB;		/* encoder value at 1s ago */
+volatile int16_t l_cntB = 0;	/* revs of the value range */
 
 uint8_t cntT = 0;
 
@@ -361,15 +365,43 @@ void HAL_TIM_PWM_MspDeInit(TIM_HandleTypeDef* tim_pwmHandle)
 /* USER CODE BEGIN 1 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
+	HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	/* each 5ms */
 	if(htim->Instance == TIM2){
 		cntT++;
 		l_encA = __HAL_TIM_GET_COUNTER(&htim3);
 		l_encB = __HAL_TIM_GET_COUNTER(&htim4);
 	}
+	/* each 1s */
 	if(cntT>=200){
-		HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
 		cntT = 0;
+		l_pre_encA = l_encA;
+		l_pre_encB = l_encB;
 	}
+	count();
+}
+void count(void){
+	/* from 32767 -> -32768 => increase round counter */
+	if(l_encA < 0 && l_pre_encA > 15000){
+		l_cntA++;
+		__HAL_TIM_SET_COUNTER(&htim3,0);
+	}
+	if(l_encB < 0 && l_pre_encB > 15000){
+		l_cntB++;
+		__HAL_TIM_SET_COUNTER(&htim4,0);
+	}
+	/* from -32768 -> 32767 => decrease round counter */
+	if(l_encA > 0 && l_pre_encA < -15000){
+		l_cntA--;
+		__HAL_TIM_SET_COUNTER(&htim3,0);
+	}
+	if(l_encB > 0 && l_pre_encB < -15000){
+		l_cntB--;
+		__HAL_TIM_SET_COUNTER(&htim4,0);
+	}
+	/* The actual number of pulses from the encoder */
+	encA = l_cntA*32768 + l_encA;
+	encB = l_cntB*32768 + l_encB;
 }
 /* USER CODE END 1 */
 
