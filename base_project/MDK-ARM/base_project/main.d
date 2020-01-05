@@ -38,3 +38,4 @@ base_project\main.o: ../Core/Inc/tim.h
 base_project\main.o: ../Core/Inc/usart.h
 base_project\main.o: ../Core/Inc/gpio.h
 base_project\main.o: ../Core/Inc/motor.h
+base_project\main.o: ../Core/Inc/pid.h

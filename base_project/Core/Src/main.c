@@ -4,12 +4,15 @@
 #include "usart.h"
 #include "gpio.h"
 #include "motor.h"
-
+#include "pid.h"
 
 void SystemClock_Config(void);
 volatile int32_t encA;
 volatile int32_t encB;
-uint16_t speed=0;
+
+pid_type pidA;
+pid_type pidB;
+
 int main(void)
 {
   HAL_Init();
@@ -29,33 +32,19 @@ int main(void)
 	/* Do not use OR bitwise operator - TIM_CHANNEL_1|TIM_CHANNEL_2 */
 	HAL_TIM_PWM_Start(&htim9, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim9, TIM_CHANNEL_2);
-  while (1)
-  {
-		while(encB < 50000){
-			speed_run(0,40000);
-		}
-		speed_run(0,0);
-//		while(1){
-//			if(HAL_GPIO_ReadPin(U_BTN_GPIO_Port,U_BTN_Pin)==GPIO_PIN_RESET){
-//				HAL_Delay(500);
-//				break;
-//			}
-//		}
-//		speed_run(40000,speed);
-//		while(1){
-//			if(HAL_GPIO_ReadPin(U_BTN_GPIO_Port,U_BTN_Pin)==GPIO_PIN_RESET){
-//				HAL_Delay(500);
-//				break;
-//			}
-//		}
-		//count();
+	/*_____________ Init value _____________*/
+	pidA.setPoint = 8000;
+	pidA.kP = 100;
+	pidA.kI = 1000;
+	pidA.kD = 0;
+	pidB.setPoint = 8000;
+	pidB.kP = 100;
+	pidB.kI = 1000;
+  while (1){
+		speed_run(pidA.output,pidB.output);
 		if(HAL_GPIO_ReadPin(U_BTN_GPIO_Port,U_BTN_Pin)==GPIO_PIN_RESET){
-			speed+=5000;
-			if(speed>40000) speed = 0;
-			HAL_GPIO_WritePin(BZ_GPIO_Port,BZ_Pin,GPIO_PIN_RESET);
-			HAL_Delay(100);
-			HAL_GPIO_WritePin(BZ_GPIO_Port,BZ_Pin,GPIO_PIN_SET);
-			HAL_Delay(100);
+			pidA.setPoint = -10000;
+			pidB.setPoint = -10000;
 		}
   }
 }

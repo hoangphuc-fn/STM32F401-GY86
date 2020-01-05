@@ -432,6 +432,11 @@
               <FileType>1</FileType>
               <FilePath>..\Core\Src\motor.c</FilePath>
             </File>
+            <File>
+              <FileName>pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\pid.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
