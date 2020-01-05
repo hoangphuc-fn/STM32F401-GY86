@@ -4,12 +4,15 @@
 #include "usart.h"
 #include "gpio.h"
 #include "motor.h"
-
+#include "pid.h"
 
 void SystemClock_Config(void);
-volatile short encA;
-volatile int16_t encB;
-uint16_t speed=0;
+volatile int32_t encA;
+volatile int32_t encB;
+
+pid_type pidA;
+pid_type pidB;
+
 int main(void)
 {
   HAL_Init();
@@ -29,16 +32,19 @@ int main(void)
 	/* Do not use OR bitwise operator - TIM_CHANNEL_1|TIM_CHANNEL_2 */
 	HAL_TIM_PWM_Start(&htim9, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim9, TIM_CHANNEL_2);
-  while (1)
-  {
-		speed_run(speed,speed);
+	/*_____________ Init value _____________*/
+	pidA.setPoint = 8000;
+	pidA.kP = 100;
+	pidA.kI = 1000;
+	pidA.kD = 0;
+	pidB.setPoint = 8000;
+	pidB.kP = 100;
+	pidB.kI = 1000;
+  while (1){
+		speed_run(pidA.output,pidB.output);
 		if(HAL_GPIO_ReadPin(U_BTN_GPIO_Port,U_BTN_Pin)==GPIO_PIN_RESET){
-			speed+=5000;
-			if(speed>40000) speed=0;
-			HAL_GPIO_WritePin(BZ_GPIO_Port,BZ_Pin,GPIO_PIN_RESET);
-			HAL_Delay(200);
-			HAL_GPIO_WritePin(BZ_GPIO_Port,BZ_Pin,GPIO_PIN_SET);
-			HAL_Delay(800);
+			pidA.setPoint = -10000;
+			pidB.setPoint = -10000;
 		}
   }
 }
