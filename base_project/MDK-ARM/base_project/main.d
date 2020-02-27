@@ -33,7 +33,6 @@ base_project\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
 base_project\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
 base_project\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 base_project\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
-base_project\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 base_project\main.o: ../Core/Inc/i2c.h
 base_project\main.o: ../Core/Inc/tim.h
 base_project\main.o: ../Core/Inc/usart.h
@@ -43,7 +42,9 @@ base_project\main.o: ../Core/Inc/pid.h
 base_project\main.o: ../Core/Inc/hal_i2c_mpu6050.h
 base_project\main.o: ../Core/Inc/hal_i2c_hmc5883l.h
 base_project\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+base_project\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 base_project\main.o: ../Core/Inc/simple_kalman.h
 base_project\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 base_project\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 base_project\main.o: ../Core/Inc/kalman.h
+base_project\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

@@ -138,7 +138,7 @@
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2CM3.DLL</Flash2>
-          <Flash3>"" ()</Flash3>
+          <Flash3></Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F401xC,USE_HAL_DRIVER,STM32F401xC</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;       ../Drivers/STM32F4xx_HAL_Driver/Inc;       ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;       ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;       ../Drivers/CMSIS/Include</IncludePath>
+              <IncludePath>../Core/Inc;        ../Drivers/STM32F4xx_HAL_Driver/Inc;        ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;        ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;        ../Drivers/CMSIS/Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -393,6 +393,36 @@
           <GroupName>Application/User/Core</GroupName>
           <Files>
             <File>
+              <FileName>motor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\motor.c</FilePath>
+            </File>
+            <File>
+              <FileName>pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\pid.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_i2c_mpu6050.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\hal_i2c_mpu6050.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_i2c_hmc5883l.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\hal_i2c_hmc5883l.c</FilePath>
+            </File>
+            <File>
+              <FileName>simple_kalman.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\simple_kalman.c</FilePath>
+            </File>
+            <File>
+              <FileName>kalman.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\kalman.c</FilePath>
+            </File>
+            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/main.c</FilePath>
@@ -426,36 +456,6 @@
               <FileName>stm32f4xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/stm32f4xx_hal_msp.c</FilePath>
-            </File>
-            <File>
-              <FileName>motor.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\motor.c</FilePath>
-            </File>
-            <File>
-              <FileName>pid.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\pid.c</FilePath>
-            </File>
-            <File>
-              <FileName>hal_i2c_mpu6050.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\hal_i2c_mpu6050.c</FilePath>
-            </File>
-            <File>
-              <FileName>hal_i2c_hmc5883l.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\hal_i2c_hmc5883l.c</FilePath>
-            </File>
-            <File>
-              <FileName>simple_kalman.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\simple_kalman.c</FilePath>
-            </File>
-            <File>
-              <FileName>kalman.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\kalman.c</FilePath>
             </File>
           </Files>
         </Group>

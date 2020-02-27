@@ -1,6 +1,9 @@
 #include "motor.h"
 #include "pid.h"
+#include "tim.h"
 
+extern volatile int32_t encA;
+extern volatile int32_t encB;
 extern TIM_HandleTypeDef htim9;
 extern volatile short temp;
 extern float yaw_gyro;
@@ -70,5 +73,9 @@ void reset_run(uint16_t time){
 	HAL_Delay(time);
 	yaw_gyro = 0;
 	temp = 0;
+	encA = 0;
+	encB = 0;
+	__HAL_TIM_SET_COUNTER(&htim3,0);
+	__HAL_TIM_SET_COUNTER(&htim4,0);
 }
 

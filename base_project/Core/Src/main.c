@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "kalman.h"
-
+#include <string.h>
 
 void SystemClock_Config(void);
 /* For KALMAN filter */
@@ -57,6 +57,15 @@ float mx,my,mz;
 float yaw_gyro;
 float pre_yaw_gyro_deg;
 float yaw_gyro_deg;
+uint8_t start = 0;
+char volatile rec_data;
+char volatile rec_data_buffer[100];
+uint8_t volatile array_index = 0;
+int32_t volatile run_data[3];
+uint8_t run_state = 0; // 1 cua 2 thang  3 ban kinh
+char *chayCua;
+char *chayThang;
+char *chayCong;
 long map(long x, long in_min, long in_max, long out_min, long out_max) {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
@@ -80,6 +89,7 @@ int main(void)
 	HAL_TIM_Base_Start_IT(&htim2);
 	HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_1|TIM_CHANNEL_2);
 	HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_1|TIM_CHANNEL_2);
+	HAL_UART_Receive_IT(&huart1,(uint8_t *)&rec_data,1);
 	/* Do not use OR bitwise operator - TIM_CHANNEL_1|TIM_CHANNEL_2 */
 	HAL_TIM_PWM_Start(&htim9, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim9, TIM_CHANNEL_2);
@@ -108,18 +118,31 @@ int main(void)
 		setSamples(HMC5883L_SAMPLES_8);
 		//setOffset(0, 0);
 	}
-  while (1){	
-		//speed_run(pidA.output, pidB.output);
-		while(!handle_straight(10000,encA,pidA.output,pidB.output));
-		reset_run(500);
-		while(!handle_angle(90,yaw_gyro_deg));
-		reset_run(500);
-		while(!handle_straight(-5000,encA,pidA.output,pidB.output));
-		reset_run(500);
-		while(!handle_angle(-45,yaw_gyro_deg));
-		reset_run(500);
+	
+	while(!start){
+		if(HAL_GPIO_ReadPin(U_BTN_GPIO_Port, U_BTN_Pin)==GPIO_PIN_RESET){
+			start = 1;
+//			HAL_GPIO_TogglePin(BZ_GPIO_Port, BZ_Pin);
+//			HAL_Delay(200);
+//			HAL_GPIO_TogglePin(BZ_GPIO_Port, BZ_Pin);
+//			HAL_Delay(200);
+//			HAL_GPIO_TogglePin(BZ_GPIO_Port, BZ_Pin);
+//			HAL_Delay(200);
+		}
+	}
+	
+  while (1){
+		if(run_data[1] != 0){		
+			while(!handle_straight(run_data[1],encA,pidA.output,pidB.output));
+			run_data[1] = 0;
+			reset_run(500);
+		}
+		if(run_data[0] != 0){
+			while(!handle_angle(run_data[0],yaw_gyro_deg));
+			run_data[0] = 0;
+			reset_run(500);
+		}
 		HAL_GPIO_WritePin(BZ_GPIO_Port,BZ_Pin,GPIO_PIN_SET);
-		while(1);
 		
 		/*
 		readNormalize(compass);
@@ -227,6 +250,33 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+//	if(huart->Instance == USART1){
+//		rec_data_buffer[array_index++] = rec_data;
+//		if(rec_data == 'e'){
+//			for(uint8_t i=0;i<10;i++){
+//				rec_data_buffer[i] = 0;
+//			}
+//			array_index = 0;
+//		}
+//	}
+	if(rec_data == 'c'){
+			for(uint8_t i=0;i<100;i++){
+			rec_data_buffer[i] = 0;
+		}
+	}
+	else{
+		rec_data_buffer[array_index++] = rec_data;
+		if(rec_data == 'e'){
+			array_index = 0;		
+			run_data[0] = atof(strtok((char*)rec_data_buffer,"t"));
+			run_data[1] = atof(strtok(NULL,"b"));
+			run_data[2] = atof(strtok(NULL,"e"));
+		}
+	}
+	HAL_UART_Receive_IT(&huart1,(uint8_t *)&rec_data,1);
 }
 
 void Error_Handler(void)
