@@ -134,11 +134,11 @@
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
-            <DriverSelection>4107</DriverSelection>
+            <DriverSelection>4096</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2CM3.DLL</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -188,7 +188,7 @@
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
-            <useUlib>1</useUlib>
+            <useUlib>0</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
             <nSecure>0</nSecure>
@@ -436,6 +436,26 @@
               <FileName>pid.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\Src\pid.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_i2c_mpu6050.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\hal_i2c_mpu6050.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_i2c_hmc5883l.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\hal_i2c_hmc5883l.c</FilePath>
+            </File>
+            <File>
+              <FileName>simple_kalman.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\simple_kalman.c</FilePath>
+            </File>
+            <File>
+              <FileName>kalman.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\kalman.c</FilePath>
             </File>
           </Files>
         </Group>

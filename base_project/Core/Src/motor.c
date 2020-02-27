@@ -1,6 +1,10 @@
 #include "motor.h"
+#include "pid.h"
 
 extern TIM_HandleTypeDef htim9;
+extern volatile short temp;
+extern float yaw_gyro;
+extern pid_position_type pidA;
 
 void speed_run(int32_t speed_left, int32_t speed_right){
 	if(speed_left < -40000) speed_left = -40000;
@@ -29,3 +33,42 @@ void speed_run(int32_t speed_left, int32_t speed_right){
 		htim9.Instance->CCR2 = speed_left;
 	}
 }
+
+uint8_t handle_angle(int16_t angle_target, int16_t angle_fb){
+	if((angle_target - angle_fb) < 2 && (angle_target - angle_fb) > -2){
+		speed_run(0,0);
+		HAL_GPIO_WritePin(BZ_GPIO_Port,BZ_Pin,GPIO_PIN_RESET);
+		return 1;
+	}
+	else if((angle_target - angle_fb) >= 2){
+		speed_run(10000,-10000);
+		HAL_GPIO_WritePin(BZ_GPIO_Port,BZ_Pin,GPIO_PIN_SET);
+		return 0;
+	}
+	else {
+		speed_run(-10000,10000);
+		HAL_GPIO_WritePin(BZ_GPIO_Port,BZ_Pin,GPIO_PIN_SET);
+		return 0;
+	}
+}
+
+uint8_t handle_straight(int32_t dis_target, int32_t dis_fb, int32_t speed_left, int32_t speed_right){
+	pidA.setPoint = dis_target;
+	if((dis_target - dis_fb) < 200 && (dis_target - dis_fb) > -200){
+		speed_run(0,0);
+		HAL_GPIO_WritePin(BZ_GPIO_Port,BZ_Pin,GPIO_PIN_RESET);
+		return 1;
+	}
+	else {
+		speed_run(speed_left,speed_right);
+		HAL_GPIO_WritePin(BZ_GPIO_Port,BZ_Pin,GPIO_PIN_SET);
+		return 0;
+	}
+}
+	
+void reset_run(uint16_t time){
+	HAL_Delay(time);
+	yaw_gyro = 0;
+	temp = 0;
+}
+

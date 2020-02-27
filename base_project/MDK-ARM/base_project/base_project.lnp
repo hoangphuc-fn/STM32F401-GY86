@@ -9,6 +9,10 @@
 "base_project\stm32f4xx_hal_msp.o"
 "base_project\motor.o"
 "base_project\pid.o"
+"base_project\hal_i2c_mpu6050.o"
+"base_project\hal_i2c_hmc5883l.o"
+"base_project\simple_kalman.o"
+"base_project\kalman.o"
 "base_project\stm32f4xx_hal_i2c.o"
 "base_project\stm32f4xx_hal_i2c_ex.o"
 "base_project\stm32f4xx_hal_tim.o"
@@ -28,7 +32,7 @@
 "base_project\stm32f4xx_hal.o"
 "base_project\stm32f4xx_hal_exti.o"
 "base_project\system_stm32f4xx.o"
---library_type=microlib --strict --scatter "base_project\base_project.sct"
+--strict --scatter "base_project\base_project.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list "base_project.map" -o base_project\base_project.axf

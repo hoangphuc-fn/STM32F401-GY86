@@ -20,13 +20,23 @@
 /* Includes ------------------------------------------------------------------*/
 #include "tim.h"
 #include "pid.h"
+#include "hal_i2c_mpu6050.h"
 
 /* USER CODE BEGIN 0 */
 
+extern volatile short temp;
+
 extern volatile int32_t encA;	/* the actual encoder value after processing */
 extern volatile int32_t encB;	/* the actual encoder value after processing */
-extern pid_type pidA;					/* the PID structure variable */
-extern pid_type pidB;					/* the PID structure variable */
+extern pid_position_type pidA;					/* the PID structure variable */
+extern pid_position_type pidB;					/* the PID structure variable */
+extern pid_speed_type pidLW;
+
+extern float gyro_result[3];
+extern float yaw_gyro;
+extern float yaw_gyro_deg;
+extern float pre_yaw_gyro_deg;
+float hihi;
 
 volatile short l_encA;				/* encoder value at now */
 volatile short l_pre_encA;		/* encoder value at 1s ago */
@@ -368,7 +378,6 @@ void HAL_TIM_PWM_MspDeInit(TIM_HandleTypeDef* tim_pwmHandle)
 /* USER CODE BEGIN 1 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
 	/* each 5ms */
 	if(htim->Instance == TIM2){
 		l_cntT++;
@@ -377,22 +386,46 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		/* read encoder value after processing */
 		count();
 		/* PID caculate */
+#if (1)
 		pidA.error = pidA.setPoint - encA;
 		pidB.error = pidB.setPoint - encB;
-		pidA.output = pid_compute(pidA.kP,pidA.kI,pidA.kD,pidA.error,pidA.preError);
-		pidB.output = pid_compute(pidB.kP,pidB.kI,pidB.kD,pidB.error,pidB.preError);
+		pidA.output = pid_position_compute(pidA.kP,pidA.kI,pidA.kD,pidA.error,pidA.preError);
+		if(pidA.output > 20000) pidA.output = 20000;
+		else if (pidA.output < -20000) pidA.output = -20000;
+		hihi = pre_yaw_gyro_deg*yaw_gyro_deg;
+		if(pre_yaw_gyro_deg*yaw_gyro_deg < -10)temp *= -0.2;
+		if(yaw_gyro_deg>0) temp += 2*yaw_gyro_deg;
+		else if(yaw_gyro_deg<0) temp += 2*yaw_gyro_deg;
+		if(temp > 30000) temp = 30000;
+		else if(temp < - 20000) temp = -20000;
+		pidB.output = pidA.output + temp;
+		if(pidB.output > 40000) pidB.output = 40000;
+		else if (pidB.output < -40000) pidB.output = -40000;
+		//pidB.output = pid_position_compute(pidB.kP,pidB.kI,pidB.kD,pidB.error,pidB.preError);
 		pidA.preError = pidA.error;
 		pidB.preError = pidB.error;
+#else
+		pidLW.error = pidLW.setPoint - temp;
+		pidLW.output = pid_speed_compute(pidLW.kP,pidLW.kI,pidLW.kD,pidLW.error,pidLW.preError);
+		pidLW.preError = pidLW.error;
+#endif
+		/* read Gyro value  */
+		MPU6050_Read_Gyro(&hi2c1,gyro_result,MPU6050_GYRO_SENS_250);
+		/* calculate yaw angle from Gyro value */
+		yaw_gyro -= gyro_result[2]*5/1000;
+		yaw_gyro_deg = yaw_gyro;
 	}
 	/* each 1s */
 	if(l_cntT>=200){
 		l_cntT = 0;
 		l_pre_encA = l_encA;
 		l_pre_encB = l_encB;
+		pre_yaw_gyro_deg = yaw_gyro_deg;
 	}
 }
 void count(void)
 {
+#if 1
 	/* from 32767 -> -32768 => increase round counter */
 	if(l_encA < 0 && l_pre_encA > 15000){
 		l_cntA++;
@@ -414,6 +447,9 @@ void count(void)
 	/* The actual number of pulses from the encoder */
 	encA = l_cntA*32768 + l_encA;
 	encB = l_cntB*32768 + l_encB;
+#else
+	
+#endif
 }
 /* USER CODE END 1 */
 

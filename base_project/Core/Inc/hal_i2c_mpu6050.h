@@ -3,13 +3,13 @@
 #include "i2c.h"
 extern I2C_HandleTypeDef hi2c1;
 /******************************************************************************/
-/*                          I2C Device Address		            	      */
+/*                          I2C Device Address		            	      				*/
 /******************************************************************************/
 #define MPU6050_ADDRESS  0xD0
-#define HMC5883L_ADDRESS 0b0011110
+#define anydevice 0xEE
 
 /******************************************************************************/
-/*                          MPU6050 Register		            	      */
+/*                          MPU6050 Register		            	      					*/
 /******************************************************************************/
 #define XGOFFS_TC				0x00        
 #define YGOFFS_TC				0x01                                                                          
@@ -173,6 +173,7 @@ typedef enum  {
 }MPU6050_Result;
 
 uint8_t MPU6050_Init(I2C_HandleTypeDef *hi2c, MPU6050_DataRate_TypeDef dataRate, MPU6050_Acce_Range_Typedef acceRange, MPU6050_Gyro_Range_Typedef gyroRange);
+void MPU6050_ByPass(I2C_HandleTypeDef *hi2c);
 MPU6050_Result MPU6050_Read_Accel (I2C_HandleTypeDef *hi2c, float A[], MPU6050_Acce_Sensitivities_Typedef acceSen);
 MPU6050_Result MPU6050_Read_Gyro (I2C_HandleTypeDef *hi2c, float A[], MPU6050_Gyro_Sensitivities_Typedef gyroSen);
 #endif /*_HAL_I2C_MPU6050_H_*/

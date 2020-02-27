@@ -35,3 +35,4 @@ base_project\hal_i2c_mpu6050.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ha
 base_project\hal_i2c_mpu6050.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
 base_project\hal_i2c_mpu6050.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 base_project\hal_i2c_mpu6050.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
+base_project\hal_i2c_mpu6050.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
